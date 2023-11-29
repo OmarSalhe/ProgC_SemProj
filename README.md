@@ -19,6 +19,10 @@ JOBS:
 
   * Main function
 
+  * Additional feature = ???
+
+  * Will add more 
+
 MAKE SURE TO COMMENT!
 
 
@@ -26,26 +30,30 @@ I recommend that you develop the program in stages, so the requirements are outl
 
 Stage 1:  Print calendars for a particular month or year
 
-write a C program that will print a calendar for any month of any year since 15 October 1582; the calendar should be formatted like a typical calendar page: Month and Year on the top line, then Days of the week Sunday to Saturday, then, in a block, the dates of the month in their proper day columns.
+ write a C program that will print a calendar for any month of any year since 15 October 1582; the calendar should be formatted like a  typical calendar page: Month and Year on the top line, then Days of the week Sunday to Saturday, then, in a block, the dates of the    month in their proper day columns.
 
-the user is to input a year and month and the program is to print a calendar for that month. You are to decide whether the user should type in an integer or a word for the month. Both entries should be validated, any errors flagged, and the user should be asked to reenter the erroneous data. (see samples on page ??)
+ the user is to input a year and month and the program is to print a calendar for that month. You are to decide whether the user        should type in an integer or a word for the month. Both entries should be validated, any errors flagged, and the user should be asked  to reenter the erroneous data. (see samples on page ??)
 
-Include an option for the user to request a calendar for an entire year, say by entering the word “all” for the month.
-Once you have a basic program working properly, then move to stage two.
+ Include an option for the user to request a calendar for an entire year, say by entering the word “all” for the month.
+ Once you have a basic program working properly, then move to stage two.
  
 
 Stage 2:  Add the ability to maintain a list of events by date
 
-Add a function to allow the user to enter an event and date (time might be included as part of the event listing or could be entered as a separate item
+ Add a function to allow the user to enter an event and date (time might be included as part of the event listing or could be entered   as a separate item
 
-The events are to be written to a text file, one event per line; the file name is to be the name of the user. The user should be asked to enter their (file) name when starting a session and the program is to pull up and display any saved events that belong to this particular user.  (see samples, page ??)
-the user should be able to add, delete and modify events as desired.
+ The events are to be written to a text file, one event per line; the file name is to be the name of the user. The user should be       asked to enter their (file) name when starting a session and the program is to pull up and display any saved events that belong to     this particular user.  (see samples, page ??)
+ the user should be able to add, delete and modify events as desired.
 
-when a user requests a calendar for a particular month & year, any events for that month are to be displayed either in or below the actual calendar display.
+ when a user requests a calendar for a particular month & year, any events for that month are to be displayed either in or below the    actual calendar display.
+
+
 
 
 Stage 3:  Add additional capabilities of your own devising.  (optional)
  
+
+
 
 Scoring Rubric:
 
