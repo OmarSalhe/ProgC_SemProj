@@ -1,6 +1,8 @@
 # ProgC_SemProj
 Semester Project for Ed Crotty
 
+look at code version for better reading.
+
 GROUP:
   * Abu -
   * Yao -
