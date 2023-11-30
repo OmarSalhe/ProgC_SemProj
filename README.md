@@ -5,7 +5,7 @@ look at code version for better reading.
 
 GROUP:
   * Abu -
-  * Yao -
+  * Yao - Do the Month stuff. 
   * Omar - 
     
 JOBS:
