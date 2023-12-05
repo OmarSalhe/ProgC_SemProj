@@ -4,7 +4,7 @@ Semester Project for Ed Crotty
 look at code version for better reading.
 
 GROUP:
-  * Abu -
+  * Abu - Main Function
   * Yao - Do the Month stuff. 
   * Omar - implementing Zeller
     
