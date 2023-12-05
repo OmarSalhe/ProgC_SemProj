@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+enum days {Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday};
+
 int zeller(int day, int month, int year);
 
 int main(){
