@@ -6,7 +6,7 @@ look at code version for better reading.
 GROUP:
   * Abu -
   * Yao - Do the Month stuff. 
-  * Omar - 
+  * Omar - implementing Zeller
     
 JOBS:
   * Print calendar
