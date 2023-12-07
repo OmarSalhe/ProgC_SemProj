@@ -3,6 +3,8 @@
 enum days {Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday};
 
 int zeller(int day, int month, int year);
+int isLeapYear(int year);
+int numOfLeap(int, int);
 
 int main(){
     int day, month, year;
@@ -13,7 +15,25 @@ int main(){
 
 int zeller(int day, int month, int year){
     int K = year % 100, J = (year / 100);
-    return (day + (13 * (month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % 7;
+    if (month < 3){     //in zeller jan = 13 and feb = 14 -> it is the end of the previous year
+        month += 12;
+        year--;
+    }
+    return (day + (13 * (month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % 7;  //return 0-6 signifying the day of the week
+}
+
+int isLeapYear(int year){
+    return ((year % 4 && year % 100) != 0) || ((year % 400) == 0);
+}
+
+int numOfLeap(int start_year, int end_year){
+    int leapDays = 0;   //num of days added due to leap year
+    for (int i = 0, diff_year = end_year - start_year; i < diff_year + 1; i++){     //adds a year from start year until end year and finds # of leap years in between
+        if (isLeapYear(start_year + i)){
+            leapDays++;
+        }
+    }
+    return leapDays;
 }
 
 
