@@ -20,18 +20,18 @@ int getDaysInMonth(int year, int month) {
 }
 
 // Function to get the day of the week for a given date
-int getDayOfWeek(int year, int month, int day) {
-    if (month < 3) {
-        month += 12;
-        year--;
+int zeller(int start_day, int start_month, int start_year){
+    int K = start_year % 100, J = (start_year / 100);
+    //zeller's congruence considers Jan and Feb the last two months starting from March = 3
+    if (start_month < 3){
+        start_month += 12;
+        start_year--;
     }
+    //returns a value between 0-6 -> 0 = Saturday, 1 = Sunday ...
+    int zellerDay = (start_day + (13 * (start_month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % week;
 
-    int k = year % 100;
-    int j = year / 100;
-
-    int dayOfWeek = (day + 13 * (month + 1) / 5 + k + k / 4 + j / 4 + 5 * j) % 7;
-
-    return (dayOfWeek + 5) % 7; // Adjust for the known day of October 15, 1582 (Friday)
+    //by adding +6 if day = saturday -> 0+6 % 7 = 6 (last day), if sunday -> 1 + 6 % 7 = 0 (first day)...
+    return (zellerDay + 6) % 7;
 }
 
 // Function to print a calendar for a given month and year
