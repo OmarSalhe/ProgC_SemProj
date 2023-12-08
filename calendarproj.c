@@ -15,9 +15,6 @@ int firstDayOfMonth(int start_day, int start_month, int start_year, int end_mont
 const int monthDays[num_of_months] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int main(){
-    int day, month, year;
-
-    printf("%d", zeller(5, 12, 2023));
     return 0;
 }
 
