@@ -1,10 +1,18 @@
 #include <stdio.h>
 
-enum days {Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday};
+#define week 7
+#define num_of_months 12
+#define days_in_year 365
 
-int zeller(int day, int month, int year);
+int dayMonthStarts(int start_day, int start_month, int start_year);
+int zeller(int start_day, int start_month, int start_year);
 int isLeapYear(int year);
-int numOfLeap(int, int);
+int numOfLeap(int starrt_year, int end_year);
+int numOfDaysApart(int start_day, int start_month, int start_year, int end_year, int end_month);
+int daysIntoYear(int month, int day);
+int firstDayOfMonth(int start_day, int start_month, int start_year, int end_month, int end_year);
+
+const int monthDays[num_of_months] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int main(){
     int day, month, year;
@@ -13,22 +21,37 @@ int main(){
     return 0;
 }
 
-int zeller(int day, int month, int year){
-    int K = year % 100, J = (year / 100);
-    if (month < 3){     //in zeller jan = 13 and feb = 14 -> it is the end of the previous year
-        month += 12;
-        year--;
+int firstDayOfMonth(int start_day, int start_month, int start_year, int end_month, int end_year){
+    int daysApart = numOfDaysApart(start_day, start_month, start_year, end_year, end_month);
+    int startDay = zeller(start_day, start_month, start_year);
+
+    // daysApart + startDay calculates the target day. modulo week (7) confines this value to a day in the week.
+    return (daysApart + startDay) % week; 
+}
+
+
+int zeller(int start_day, int start_month, int start_year){
+    int K = start_year % 100, J = (start_year / 100);
+    //zeller's congruence considers Jan and Feb the last two months starting from March = 3
+    if (start_month < 3){
+        start_month += 12;
+        start_year--;
     }
-    return (day + (13 * (month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % 7;  //return 0-6 signifying the day of the week
+    //returns a value between 0-6 -> 0 = Saturday, 1 = Sunday ...
+    return (start_day + (13 * (start_month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % week;
 }
 
 int isLeapYear(int year){
+    //return true or false, depending on if leap year or not
     return ((year % 4 && year % 100) != 0) || ((year % 400) == 0);
 }
 
 int numOfLeap(int start_year, int end_year){
-    int leapDays = 0;   //num of days added due to leap year
-    for (int i = 0, diff_year = end_year - start_year; i < diff_year + 1; i++){     //adds a year from start year until end year and finds # of leap years in between
+    //# of days added due to a leap year
+    int leapDays = 0;
+    //iterates over every year between start and target year checking for leap years
+    for (int i = 0, diff_year = end_year - start_year; i < diff_year + 1; i++){ 
+        //adds 1 day for every leap year
         if (isLeapYear(start_year + i)){
             leapDays++;
         }
@@ -36,8 +59,35 @@ int numOfLeap(int start_year, int end_year){
     return leapDays;
 }
 
+int numOfDaysApart(int start_day, int start_month, int start_year, int end_year, int end_month){
+    //accounts for additional days due to leap years
+    int leapDays = numOfLeap(start_year, end_year);
+    //# of full years elapsed between start and target date
+    int yearAhead = (end_year - start_year - 1) * days_in_year;
+    //calculates remaining days withiin starting year
+    int daysLeftStart = days_in_year - daysIntoYear(start_month, start_day);    //subtracts remaining days in the year for the starting date
+    //accounts for potential leap year on start
+    if (isLeapYear(start_year)){ 
+        daysLeftStart--;
+    }
+    //calculates # of days into target year
+    int daysIntoCurrent = daysIntoYear(end_month, 0); //day = 0 b/c start of month
 
+    //returns total # of days elapesed between start and end date
+    return yearAhead + leapDays + daysIntoCurrent - daysLeftStart;  //total # of days between entered month and starting date
+}
 
+int daysIntoYear(int month, int day){
+    int numOfDays = 0;
+    //adds values of each full month passed 
+    for (int i = 0; i < month; i++){ 
+        numOfDays += monthDays[i];
+    }
+    //adds # of days into current month
+    numOfDays += day;
+
+    return numOfDays;
+}
 
 /*
 int day;
