@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 
 // Function to check if a year is a leap year
-int isLeapYear(int year) {
+bool isLeapYear(int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
@@ -19,18 +20,18 @@ int getDaysInMonth(int year, int month) {
 }
 
 // Function to get the day of the week for a given date
-int zeller(int start_day, int start_month, int start_year){
-    int K = start_year % 100, J = (start_year / 100);
-    //zeller's congruence considers Jan and Feb the last two months starting from March = 3
-    if (start_month < 3){
-        start_month += 12;
-        start_year--;
+int zeller(int year, int month, int day) {
+    if (month < 3) {
+        month += 12;
+        year--;
     }
-    //returns a value between 0-6 -> 0 = Saturday, 1 = Sunday ...
-    int zellerDay = (start_day + (13 * (start_month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % week;
 
-    //by adding +6 if day = saturday -> 0+6 % 7 = 6 (last day), if sunday -> 1 + 6 % 7 = 0 (first day)...
-    return (zellerDay + 6) % 7;
+    int k = year % 100;
+    int j = year / 100;
+
+    int dayOfWeek = (day + 13 * (month + 1) / 5 + k + k / 4 + j / 4 + 5 * j) % 7;
+
+    return ((dayOfWeek + 6) % 7)+1; // Adjust for the known day of October 15, 1582 (Friday)
 }
 
 // Function to print a calendar for a given month and year
@@ -44,7 +45,7 @@ void printCalendar(int year, int month) {
     printf("Sat Sun Mon Tues Wed Thu Fri \n");
 
     // Get the day of the week for the first day of the month
-    int dayOfWeek = getDayOfWeek(year, month, 1);
+    int dayOfWeek = zeller(year, month, 1);
 
     // Print leading spaces to align the first day properly
     for (int i = 0; i < dayOfWeek; i++) {
@@ -103,6 +104,7 @@ int main() {
 
     return 0;
 }
+
 
 
 /*
