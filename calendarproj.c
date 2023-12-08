@@ -7,7 +7,7 @@
 int dayMonthStarts(int start_day, int start_month, int start_year);
 int zeller(int start_day, int start_month, int start_year);
 int isLeapYear(int year);
-int numOfLeap(int starrt_year, int end_year);
+int numOfLeap(int start_year, int end_year);
 int numOfDaysApart(int start_day, int start_month, int start_year, int end_year, int end_month);
 int daysIntoYear(int month, int day);
 int firstDayOfMonth(int start_day, int start_month, int start_year, int end_month, int end_year);
