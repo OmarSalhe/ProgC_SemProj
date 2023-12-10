@@ -1,27 +1,4 @@
 /*
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-
-#define num_of_months 12
-
-// Function to check if a year is a leap year
-bool isLeapYear(int year) {
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-}
-
-// Function to get the number of days in a given month of a year
-int getDaysInMonth(int year, int month) {
-    // Array representing the number of days in each month
-    int daysInMonth[num_of_months] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-    // Adjust February for leap years
-    if (month == 2 && isLeapYear(year)) {
-        return 29;
-    } else {
-        return daysInMonth[month - 1];
-    }
-}
 
 // Zeller's Congruence algorithm to determine the day of the week
 int zeller(int month, int year) {
