@@ -65,7 +65,7 @@ int numOfLeap(int target_year){
     //iterates over every year between start and target year checking for leap years
     for (int i = start_year; i < target_year + 1; i++){ 
         //adds 1 day for every leap year
-        if (isLeapYear(start_year + i)){
+        if (isLeapYear(i)){
             leapDays++;
         }
     }
