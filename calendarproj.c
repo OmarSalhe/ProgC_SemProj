@@ -14,9 +14,20 @@ int firstDayOfMonth(int target_month, int target_year);
 //starting date for the calendar is October 15, 1582 or 15/10/1582
 const int start_day = 15, start_month = 10, start_year = 1582;
 
-const int monthDays[months_in_year] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-const char* monthNames[] = 
-{   "January",
+
+const int monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+const char* dayNames[] = {
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+};
+const char* monthNames[] = {   
+    "January",
     "February",
     "March",
     "April",
@@ -31,7 +42,8 @@ const char* monthNames[] =
 };
 
 int main(){
-
+    int month = 1, year = 2023;
+    printf("%s", dayNames[firstDayOfMonth(month, year)]);
     return 0;
 }
 
@@ -68,7 +80,7 @@ int numberOfLeapYears(int target_year){
     for (int i = start_year; i < target_year + 1; i++){ 
         //adds 1 day for every leap year
         if (isLeapYear(i)){
-            leapDays++;
+            leapDays++;         
         }
     }
     return leapDays;
@@ -88,18 +100,25 @@ int numberOfDaysApart(int target_year, int target_month){
     if (isLeapYear(start_year)){ 
         daysLeftStart--;
     }
+
     //calculates # of days into target year
-    int daysIntoCurrent = totalDaysIntoYear(target_month, 0); //day = 0 b/c start of month
+    int daysIntoCurrent = 0;
+    if (target_month == 0)
+         daysIntoCurrent = totalDaysIntoYear(target_month, 0); //day = 0 b/c start of month
+    else
+         daysIntoCurrent = totalDaysIntoYear(target_month, 1); //day = 0 b/c start of month
+
+    printf("Year Ahead: %d, Leap Days: %d, Days Into Current: %d, Days Left Start: %d\n", yearAhead, leapDays, daysIntoCurrent, daysLeftStart);
 
     //returns total # of days elapesed between start and end date
-    return yearAhead + leapDays + daysIntoCurrent - daysLeftStart;  //total # of days between entered month and starting date
+    return yearAhead + leapDays + daysIntoCurrent + daysLeftStart;  //total # of days between entered month and starting date
 }
 
 int totalDaysIntoYear(int month, int day){
     int numOfDays = 0;
 
     //adds values of each full month passed 
-    for (int i = 0; i < month; i++){ 
+    for (int i = 0; i < month - 1; i++){ 
         numOfDays += monthDays[i];
     }
 
@@ -108,6 +127,8 @@ int totalDaysIntoYear(int month, int day){
 
     return numOfDays;
 }
+
+
 
 
 /*
