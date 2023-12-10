@@ -31,7 +31,6 @@ int main(void)
 //This program just puts events into the file 
 #include <stdio.h>
 FILE *ptr;
-char decision;
 char event[200], time[20];
 int day, month, year;
 int main(void)
