@@ -1,4 +1,5 @@
 // This program find a specific line in the file and prints the content of the line. You have to manually write stuff into the file first. 
+// For this program to work the file has to look like this: 1. MM/DD/YYYY, time: Events. The number one corresponds to line number. 
 #include <stdio.h>
 
 FILE *ptr;
