@@ -1,10 +1,10 @@
-// This program find a specific line in the file and prints the content of the line. 
+// This program find a specific line in the file and prints the content of the line. You have to manually write stuff into the file first. 
 #include <stdio.h>
 
 FILE *ptr;
 char line[256];
 char ch;
-char lineWant = '4', line1 = 1;
+char lineWant = '4';   //Line want = line you want to find. 
 
 int main(void)
 {
