@@ -1,0 +1,68 @@
+// This program find a specific line in the file and prints the content of the line. 
+#include <stdio.h>
+
+FILE *ptr;
+char line[256];
+char ch;
+char lineWant = '4', line1 = 1;
+
+int main(void)
+{
+    ptr = fopen("File.txt", "r+");
+    while(1)
+    {
+        fgets(line, 256, ptr);
+        if(line[0] == lineWant)
+        {
+            printf("Found line\n");
+            printf("Line contents: %s", line);
+            break;
+        }
+        if(feof(ptr))
+        {
+            break;
+        }
+    }
+}
+
+
+
+//This program just puts events into the file 
+#include <stdio.h>
+FILE *ptr;
+char decision;
+char event[200], time[20];
+int day, month, year;
+int main(void)
+{
+    ptr = fopen("file.txt", "a");
+    do
+    {
+        printf("Do you want to add an event (enter Y for yes and N for No)?");
+        scanf(" %c", &decision);
+
+        if (decision == 'Y')
+        {
+            printf("Enter date in the form month/day/year:");
+            scanf("%d/%d/%d", &month, &day, &year);
+
+            printf("Enter time:");
+            scanf("%s", time);
+
+            getchar();
+
+            printf("Enter event:");
+            fgets(event, 200, stdin);
+
+            fprintf(ptr, "%d/%d/%d, %s: %s",month, day, year, time, event);
+        }
+        else if(decision == 'N')
+        {
+            break;
+        }
+    }
+    while(1);
+    fclose(ptr);
+}
+
+
