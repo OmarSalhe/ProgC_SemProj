@@ -1,42 +1,57 @@
-/*
 #include <stdio.h>
 
 #define week 7
 #define num_of_months 12
 #define days_in_year 365
 
-int dayMonthStarts(int start_day, int start_month, int start_year);
-int zeller(int start_day, int start_month, int start_year);
+int zeller();
 int isLeapYear(int year);
-int numOfLeap(int start_year, int end_year);
-int numOfDaysApart(int start_day, int start_month, int start_year, int end_year, int end_month);
+int numOfLeap(int target_year);
+int numOfDaysApart(int target_year, int target_month);
 int daysIntoYear(int month, int day);
-int firstDayOfMonth(int start_day, int start_month, int start_year, int end_month, int end_year);
+int firstDayOfMonth(int target_month, int target_year);
 
+const int start_day = 15, start_month = 10, start_year = 1582;
 const int monthDays[num_of_months] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const char* monthNames[] = 
+{   "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+};
 
 int main(){
+
     return 0;
 }
 
-int firstDayOfMonth(int start_day, int start_month, int start_year, int end_month, int end_year){
-    int daysApart = numOfDaysApart(start_day, start_month, start_year, end_year, end_month);
-    int startDay = zeller(start_day, start_month, start_year);
+int firstDayOfMonth(int target_month, int target_year){
+    int daysApart = numOfDaysApart(target_year, target_month);
+    
+    //what day of the week the starting day is
+    int firstDay = zeller();
 
-    // daysApart + startDay calculates the target day. modulo week (7) confines this value to a day in the week.
-    return (daysApart + startDay) % week; 
+    // daysApart + firstDay calculates the target day. modulo week (7) confines this value to a day in the week.
+    return (daysApart + firstDay) % week; 
 }
 
-
-int zeller(int start_day, int start_month, int start_year){
+int zeller(){
+    // K = last two year digits, J = first two year digits
     int K = start_year % 100, J = (start_year / 100);
-    //zeller's congruence considers Jan and Feb the last two months starting from March = 3
-    if (start_month < 3){
-        start_month += 12;
-        start_year--;
-    }
+
     //returns a value between 0-6 -> 0 = Saturday, 1 = Sunday ...
-    return (start_day + (13 * (start_month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % week;
+    int zellerDay = (start_day + (13 * (start_month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % week;
+
+    //adjusts zeller values to traditional calendar values sunday = 0, monday = 1, ...
+    return (zellerDay + 6) % 7;
 }
 
 int isLeapYear(int year){
@@ -44,11 +59,11 @@ int isLeapYear(int year){
     return ((year % 4 && year % 100) != 0) || ((year % 400) == 0);
 }
 
-int numOfLeap(int start_year, int end_year){
-    //# of days added due to a leap year
+int numOfLeap(int target_year){
+    //# of days added due to leap years
     int leapDays = 0;
     //iterates over every year between start and target year checking for leap years
-    for (int i = 0, diff_year = end_year - start_year; i < diff_year + 1; i++){ 
+    for (int i = start_year; i < target_year + 1; i++){ 
         //adds 1 day for every leap year
         if (isLeapYear(start_year + i)){
             leapDays++;
@@ -57,19 +72,22 @@ int numOfLeap(int start_year, int end_year){
     return leapDays;
 }
 
-int numOfDaysApart(int start_day, int start_month, int start_year, int end_year, int end_month){
+int numOfDaysApart(int target_year, int target_month){
     //accounts for additional days due to leap years
-    int leapDays = numOfLeap(start_year, end_year);
-    //# of full years elapsed between start and target date
-    int yearAhead = (end_year - start_year - 1) * days_in_year;
+    int leapDays = numOfLeap(target_year);
+    
+    //the # of full years, in days, elapsed between start and target date
+    int yearAhead = (target_year - start_year - 1) * days_in_year;
+    
     //calculates remaining days withiin starting year
     int daysLeftStart = days_in_year - daysIntoYear(start_month, start_day);    //subtracts remaining days in the year for the starting date
+    
     //accounts for potential leap year on start
     if (isLeapYear(start_year)){ 
         daysLeftStart--;
     }
     //calculates # of days into target year
-    int daysIntoCurrent = daysIntoYear(end_month, 0); //day = 0 b/c start of month
+    int daysIntoCurrent = daysIntoYear(target_month, 0); //day = 0 b/c start of month
 
     //returns total # of days elapesed between start and end date
     return yearAhead + leapDays + daysIntoCurrent - daysLeftStart;  //total # of days between entered month and starting date
@@ -77,16 +95,18 @@ int numOfDaysApart(int start_day, int start_month, int start_year, int end_year,
 
 int daysIntoYear(int month, int day){
     int numOfDays = 0;
+
     //adds values of each full month passed 
     for (int i = 0; i < month; i++){ 
         numOfDays += monthDays[i];
     }
+
     //adds # of days into current month
     numOfDays += day;
 
     return numOfDays;
 }
-*/
+
 /*
 int day;
     printf("pick a num from 1 to 30");
