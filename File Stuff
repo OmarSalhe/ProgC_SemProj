@@ -67,3 +67,83 @@ int main(void)
 }
 
 
+Most recent stuff: with both functions and one main function 
+#include <stdio.h>
+#define MAX_SIZE 400
+#define TIME_MAX_SIZE 30
+
+void addEvent(FILE *ptr);
+void modifyEvents(FILE *ptr);
+
+int main(void)
+{
+    char decision;
+    FILE *ptr;
+
+    ptr = fopen("file.txt", "a");
+
+    addEvent(ptr);
+    modifyEvents(ptr);
+
+    return 0;
+}
+
+void addEvent(FILE *ptr)           // Contents within the file will be in this format: 1. 10/22/2002, 9:00: Event Name
+{                                                                                      2. 09/23/2222, 3:20: Event Name
+
+    char decision;
+    char event[MAX_SIZE], time[TIME_MAX_SIZE];
+    int day, month, year, eventNum = 1;
+
+    do
+    {
+        printf("Do you want to add an event (enter Y for yes and N for No)?");
+        scanf(" %c", &decision);
+
+        if (decision == 'Y')
+        {
+            printf("Enter date in the form month/day/year:");
+            scanf("%d/%d/%d", &month, &day, &year);
+
+            printf("Enter time:");
+            scanf("%s", time);
+
+            getchar();
+
+            printf("Enter event:");
+            fgets(event, MAX_SIZE, stdin);
+
+            fprintf(ptr, "%d. %d/%d/%d, %s: %s",eventNum, month, day, year, time, event);
+            eventNum++;
+        }
+        else if(decision == 'N')
+        {
+            break;
+        }
+    }
+    while(1);
+    fclose(ptr);
+}
+
+void modifyEvents(FILE *ptr) //this function doesn't work completely. Works when linewant is greater than or equal to 2. Does'nt work when its 1 for some reason. 
+{
+    char line[256];
+    char lineWant = '4';
+    
+    ptr = fopen("File.txt", "r+");
+    while(1)
+    {
+        fgets(line, 256, ptr);
+        if(line[0] == lineWant - 1)
+        {
+            fseek(ptr, 3, SEEK_CUR);   //It's three so that the replacement string doesn't override the 4.
+            fprintf(ptr, "Hello");
+            break;
+        }
+        if(feof(ptr))
+        {
+            break;
+        }
+    }
+}
+
