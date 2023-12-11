@@ -1,3 +1,223 @@
+#include <stdio.h>
+#include <string.h>
+
+#define week 7
+
+const char *dayNames[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+const char *monthNames[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+int isLeapYear(int year);
+int numberOfLeapYears(int target_year);
+int numberOfDaysApart(int target_year, int target_month);
+int totalDaysIntoYear(int month, int day, int target_year);
+int firstDayOfMonth(int target_month, int target_year);
+void printCalendar(int year, int month);
+int daysAfter(int month, int year);
+
+// starting date for the calendar is October 15, 1582, or 15/10/1582
+const int start_day = 15, start_month = 10, start_year = 1582;
+const int monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+int main()
+{
+    int year, month;
+
+    // Prompt the user to enter the year and ensure it is valid
+    printf("Enter the year: ");
+    while (scanf("%d", &year) != 1 || year < start_year)
+    {
+        // Handle invalid input
+        printf("Invalid input. Please enter a valid year (since 15 October 1582): ");
+        while (getchar() != '\n')
+            ;
+    }
+
+    // Prompt the user to enter the month and ensure it is valid
+    printf("Enter the month (as an integer or 'all'): ");
+    char input[10];
+    while (scanf("%s", input) == 1)
+    {
+        if (strcmp(input, "all") == 0)
+        {
+            // Print the calendar for the entire next year
+            for (int i = 1; i <= 12; i++)
+            {
+                // Print only October to December for the year 1582
+                if (year == 1582 && i < 10)
+                    continue;
+
+                printCalendar(year, i);
+            }
+            return 0;
+        }
+        else
+        {
+            // Convert the input to an integer
+            sscanf(input, "%d", &month);
+            if (month >= 1 && month <= 12)
+            {
+                // Print the calendar for the specified month and year
+                printCalendar(year, month);
+                return 0;
+            }
+        }
+
+        // Handle invalid input
+        printf("Invalid input. Please enter a valid month (as an integer or 'all'): ");
+        while (getchar() != '\n')
+            ;
+    }
+
+    return 0;
+}
+
+void printCalendar(int year, int month)
+{
+    printf("\n");
+
+    // Print the month and year header
+    printf("    %s - %d\n", monthNames[month - 1], year);
+
+    // Print the days of the week header
+    printf("+---+---+---+---+---+---+---+\n");
+    printf("|Sun|Mon|Tue|Wed|Thu|Fri|Sat|\n");
+    printf("+---+---+---+---+---+---+---+\n");
+
+    // Calculate the day of the week for the first day of the month
+    int firstDay = firstDayOfMonth(month, year);
+
+    // Adjust the spacing for the first day
+    int spacing = (firstDay + 6) % 7; // Add 6 to ensure positive result
+
+    // Print leading spaces to align the first day properly
+    for (int i = 0; i < spacing; i++)
+    {
+        printf("|   ");
+    }
+
+    // Initialize variables to keep track of the current day and week day
+    int daysInMonth = monthDays[month - 1];
+    int weekDay = spacing;
+
+    // Loop through each day in the month
+    for (int day = 1; day <= daysInMonth; day++)
+    {
+        // Print the day with proper formatting
+        printf("|%3d", day);
+
+        // Update the week day
+        weekDay = (weekDay + 1) % week;
+
+        // Move to the next line after Saturday and start a new row
+        if (weekDay == 0)
+        {
+            printf("|\n");
+            if (day < daysInMonth)
+            {
+                printf("+---+---+---+---+---+---+---+\n");
+            }
+        }
+    }
+
+    // Fill in any remaining cells with spaces
+    while (weekDay != 0)
+    {
+        printf("|    ");
+        weekDay = (weekDay + 1) % week;
+    }
+
+    // Close the grid
+    printf("|\n");
+    printf("+---+---+---+---+---+---+---+\n");
+}
+
+int firstDayOfMonth(int target_month, int target_year)
+{
+    int daysApart = numberOfDaysApart(target_year, target_month);
+
+    // what day of the week the starting day is
+    int firstDay = daysAfter(target_month, target_year);
+
+    // daysApart + firstDay calculates the target day. modulo week (7) confines this value to a day in the week.
+    return (daysApart + firstDay) % week;
+}
+
+int daysAfter(int month, int year)
+{
+    int K = year % 100, J = (year / 100);
+    return ((1 + (13 * (month + 1) / 5) + K + (K / 4) + (J / 4) - 2 * J) % 7) + 1;
+}
+
+int isLeapYear(int year)
+{
+    // return true or false, depending on if leap year or not
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+int numberOfLeapYears(int target_year)
+{
+    // # of days added due to leap years
+    int leapDays = 0;
+    // iterates over every year between start and target year checking for leap years
+    for (int i = start_year; i < target_year + 1; i++)
+    {
+        // adds 1 day for every leap year
+        if (isLeapYear(i))
+        {
+            leapDays++;
+        }
+    }
+    return leapDays;
+}
+
+int numberOfDaysApart(int target_year, int target_month)
+{
+    // accounts for additional days due to leap years
+    int leapDays = numberOfLeapYears(target_year);
+
+    // the # of full years, in days, elapsed between start and target date
+    int yearAhead = (target_year - start_year - 1) * 365 + leapDays;
+
+    // calculates remaining days within starting year
+    int daysLeftStart = 365 - totalDaysIntoYear(start_month, start_day, start_year); // subtracts remaining days in the year for the starting date
+
+    // accounts for a potential leap year on start
+    if (isLeapYear(start_year))
+    {
+        daysLeftStart--;
+    }
+
+    // calculates # of days into the target year
+    int daysIntoCurrent = totalDaysIntoYear(target_month, 1, target_year); // day = 1 because it's the start of the month
+
+    // returns total # of days elapsed between start and end date
+    return yearAhead + daysIntoCurrent + daysLeftStart; // total # of days between entered month and starting date
+}
+
+int totalDaysIntoYear(int month, int day, int target_year)
+{
+    int numOfDays = 0;
+
+    // adds values of each full month passed
+    for (int i = 0; i < month - 1; i++)
+    {
+        numOfDays += monthDays[i];
+    }
+
+    // adds # of days into the current month
+    numOfDays += day;
+
+    // accounts for an additional day in February for a leap year
+    if (month > 2 && isLeapYear(target_year))
+    {
+        numOfDays++;
+    }
+
+    return numOfDays;
+}
+
+
 /*
 
 // Zeller's Congruence algorithm to determine the day of the week
