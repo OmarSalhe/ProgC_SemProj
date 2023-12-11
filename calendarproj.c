@@ -5,14 +5,19 @@
 #define months_in_year 12
 #define full_year 365
 
+//CALENDAR MATH -> Finds first day
 int zeller();
 int isLeapYear(int year);
 int numberOfLeapYears(int target_year);
 int numberOfDaysApart(int target_year, int target_month);
 int totalDaysIntoYear(int month, int day);
 int firstDayOfMonth(int target_month, int target_year);
+
+//PRINTS CALENDAR
 void printCalendar(int year, int month);
 void printAllCalendars(int year);
+
+//EVENT MAKING
 
 // starting date for the calendar is October 15, 1582 or 15/10/1582
 const int start_day = 15, start_month = 10, start_year = 1582;
@@ -51,6 +56,7 @@ int main() {
   return 0;
 }
 
+//
 void printAllCalendars(int year) {
   for (int month = 1; month <= months_in_year; month++) {
     printCalendar(year, month);
@@ -58,6 +64,7 @@ void printAllCalendars(int year) {
   }
 }
 
+//PRINT CALENDAR
 void printCalendar(int year, int month) {
   printf("Calendar for %s %d:\n", monthNames[month - 1], year);
 
@@ -127,6 +134,7 @@ void printCalendar(int year, int month) {
          year - start_year, leapDays, daysIntoCurrent, daysLeftStart);
 }
 
+//CALENDAR MATH
 int firstDayOfMonth(int target_month, int target_year) {
   int daysApart = numberOfDaysApart(target_year, target_month);
 
@@ -218,34 +226,3 @@ int totalDaysIntoYear(int month, int day) {
 }
 
 
-
-
-
-
-
-/*
-int day;
-    printf("pick a num from 1 to 30");
-    scanf("%d", &day);
-
-    printf("Month       Year\n");
-    printf("Sun     Mon     Tue     Wed    Thu    Fri    Sat\n");
-
-    for(int i = 0; i < 30; i++){
-        if ((i % 7) == 0 && i != 0)
-            printf("|\n __________________________________________\n\n");
-        if ((i + 1) == day){
-            if ((i + 1) < 10)
-            printf("|%d  UwU", i + 1);
-            else
-            printf("|%d UwU", i + 1);
-        }
-        else{
-            if ((i + 1) < 10)
-            printf("| %d    ", i + 1);
-            else
-            printf("| %d   ", i + 1);
-        }
-        
-    }
-*/
