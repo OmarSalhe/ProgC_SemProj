@@ -53,11 +53,8 @@ int main() {
 
 void printAllCalendars(int year) {
   if (year == 1582) {
-    // Print only months 10 through 12
-    for (int month = 10; month <= months_in_year; month++) {
-      printCalendar(year, month);
-      printf("\n");
-    }
+    printf("No calendar data available for 1582.\n");
+    return;
   } else {
     // Print all months for other years
     for (int month = 1; month <= months_in_year; month++) {
