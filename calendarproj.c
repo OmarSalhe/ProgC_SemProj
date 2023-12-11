@@ -106,7 +106,7 @@ void printCalendar(int year, int month) {
   // remaining spaces
   if ((firstDay + daysInMonth) % week != 0) {
     for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
-      printf("|    ");
+      printf("|   ");
     }
     printf("|\n");
 
@@ -114,7 +114,7 @@ void printCalendar(int year, int month) {
     for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
       printf("+---");
     }
-    printf("+----+\n");
+    printf("+---+---+---+---+---+---+\e[8m---+---+\e[0m\n");
   }
 
   // Display additional information after printing the calendar
@@ -216,6 +216,7 @@ int totalDaysIntoYear(int month, int day) {
 
   return numOfDays;
 }
+
 
 
 
