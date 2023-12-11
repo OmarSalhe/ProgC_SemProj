@@ -1,4 +1,4 @@
-/*
+
 #include <stdio.h>
 #include <string.h> // for strcmp
 
@@ -57,7 +57,7 @@ int main(){
     if (strcmp(input_month, "all") == 0) {
         printAllCalendars(year);
     } else {
-        int month = atoi(input_month);
+        int month = atoi(input_month); //atoi is to convert int to str
 
         if (month < 1 || month > 12) {
             printf("Invalid month input. Please enter 'all' or a number between 1 and 12.\n");
@@ -224,7 +224,7 @@ int totalDaysIntoYear(int month, int day) {
     return numOfDays;
 }
 
-*/
+
 #include <stdio.h>
 
 #define week 7
