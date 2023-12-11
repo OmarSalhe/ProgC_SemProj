@@ -80,7 +80,7 @@ void printCalendar(int year, int month) {
   printf("+\n");
 
   // Calculate the first day of the month
-  int firstDay = firstDayOfMonth(month - 1, year);
+  int firstDay = firstDayOfMonth(month, year);
 
   // Print leading spaces
   for (int i = 0; i < firstDay; i++) {
@@ -91,7 +91,7 @@ void printCalendar(int year, int month) {
   int daysInMonth = monthDays[month - 1];
   for (int day = 0; day < daysInMonth; day++) {
     printf("|%3d", day + 1);
-    if (((firstDay + 1) + day) % week == 0) {
+    if ((firstDay + 1 + day) % week == 0) {
       printf("|\n");
 
       // Print the grid line after each week
@@ -106,15 +106,15 @@ void printCalendar(int year, int month) {
   // remaining spaces
   if ((firstDay + daysInMonth) % week != 0) {
     for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
-      printf("|     ");
+      printf("|    ");
     }
     printf("|\n");
 
     // Print the bottom grid line
     for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
-      printf("+-----");
+      printf("+---");
     }
-    printf("+\n");
+    printf("+----+\n");
   }
 
   // Display additional information after printing the calendar
