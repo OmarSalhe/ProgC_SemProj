@@ -146,3 +146,61 @@ void modifyEvents(FILE *ptr) //this function doesn't work completely. Works when
     }
 }
 
+
+UPDATTTTEEEEE
+#include <stdio.h>
+#include <string.h>
+FILE *ptr;
+char line[256];
+int lineWant = 4;
+int lineStart = 1;
+char contents[256];
+char x;
+
+int main(void) {
+    ptr = fopen("File.txt", "a");
+    do {
+        printf("Do you want to add an event (enter Y for yes and N for No)?");
+        scanf("%c", &x);
+        getchar();
+
+        if (x == 'Y') {
+            printf("Write Something: ");
+            fgets(contents, sizeof(contents), stdin);
+            for (int i = 0; i <= strlen(contents); i++)
+            {
+                if (contents[i] == '\n') {
+                    contents[i] = '\0';
+                }
+            }
+            fprintf(ptr, "%s\n", contents);
+        }
+        else
+            break;
+    }
+    while (1);
+    fclose(ptr);
+
+    ptr = fopen("File.txt", "r+");
+    while(1)
+    {
+        fgets(line, 256, ptr);
+        if(lineStart == lineWant)
+        {
+            printf("Found line\n");
+            int n = strlen(line);
+            printf("%d", n);
+            fseek(ptr, -n - 1, SEEK_CUR);
+            fprintf(ptr, "123");
+            break;
+        }
+        if(feof(ptr))
+        {
+            break;
+        }
+        lineStart++;
+    }
+}
+
+
+
