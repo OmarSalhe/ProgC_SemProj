@@ -112,9 +112,9 @@ void printCalendar(int year, int month) {
 
     // Print the bottom grid line
     for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
-      printf("+---");
+      
     }
-    printf("+---+---+---+---+---+---+\e[8m---+---+\e[0m\n");//'\e[8m' to make text invisible and '\e[0m' to reset the text
+    printf("+---+---+---+---+---+---+---+\n");
   }
 
   // Display additional information after printing the calendar
@@ -216,6 +216,7 @@ int totalDaysIntoYear(int month, int day) {
 
   return numOfDays;
 }
+
 
 
 
