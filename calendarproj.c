@@ -396,3 +396,64 @@ int totalDaysIntoYear(int month, int day){
 
     return numOfDays;
 }
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+void calendarChoice() {
+  int year, month;
+  char user_input[4]; // 4 = 'all' + '\0'
+
+  printf("Enter year: ");
+  if ((scanf("%d", &year)) != 1) {
+    clearInputBuffer();
+    printf("Failed to scan year");
+    return;
+  }
+  clearInputBuffer();
+
+  if (year == 1582) {
+    printf("Calendar does not support year calendars on %d and month "
+           "calendars on or before October (10) ",
+           1582);
+    printf("Either 11 or 12, Enter a month: ");
+    if ((scanf("%d", &month)) != 1) {
+      clearInputBuffer();
+      printf("Failed to scan month\n");
+    }
+    clearInputBuffer();
+
+    if (month < 0 || month > 12) {
+      printf("Invalid input. Either 11 or 12\n");
+      return;
+    }
+    printCalendar(year, month);
+  } else if (year < 1582) {
+    printf("Year calendar does not support years before %d", 1582);
+    return;
+  } else {
+    printf("Enter month ('all' or 1-12): ");
+    if ((scanf("%3s", user_input)) != 1) {
+      clearInputBuffer();
+      printf("Failed to scan user input\n");
+    }
+    clearInputBuffer();
+
+    if (strcmp(user_input, "all") == 0) {
+      printAllCalendars(year);
+    } else {
+      if ((sscanf(user_input, "%d", &month)) !=
+          1) { // for cases where a string besides 'all' is inputted
+        clearInputBuffer();
+        printf("Invalid input. Enter 1 - 12 or 'all'.\n");
+        return;
+      }
+    }
+    void printEvents(char *relevantEvents[], int numEvents) {
+      printf("\nEvents for the selected month:\n");
+      for (int i = 0; i < max_Events; ++i) {
+          printf("%s\n", relevantEvents[i]);
+        }
+      }
+    printCalendar(year, month);
+  }
+}
