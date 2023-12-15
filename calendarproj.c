@@ -18,8 +18,8 @@ const int start_day = 15, start_month = 10, start_year = 1582;  //Calendar start
 const int monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; //Days in each month
 
 const char* dayNames[] = {
-    "Sunday", "Monday", "Tuesday", "Wednesday",
-    "Thursday", "Friday", "Saturday"
+    "Sun", "Mon", "Tue", "Wed",
+    "Thu", "Fri", "Sat"
 };
 
 const char* monthNames[] = {   
@@ -30,50 +30,29 @@ const char* monthNames[] = {
 void clearInputBuffer();    //clears user input buffer
 
 //Calendar Visuals functions
-void calendarChoice();                  //where decision on type of calendar occurs (month or year)
+void calendarChoice(char* fileName);                  //where decision on type of calendar occurs (month or year)
                                         //finds events for specific month and year
-void date_read(char relevantEvents[max_event][char_lim], char* fileName, int target_month, int target_day, int target_year);
-
-void printAllCalendars(int year);       //prints calendar for the yar
+void date_read(char relevantEvents[max_event][char_lim], char* fileName, int target_month, int target_year);
+void printCalendar(int year, int month);
+void printAllCalendars(int year);
+void printEvents(char relevantEvents[max_event][char_lim], int numEvents);
 
 //Event functions
-int returnUser(const char* fileName);   //searches users disk for existing event file
+int returnUser(char* fileName);   //searches users disk for existing event file
 int addEvent(char* fileName);           //creates user specific event file for event storage 
-int modifyEvent(const char* fileName);  //changes saved event based on event date and time
+int modifyEvent(char* fileName);  //changes saved event based on event date and time
+int deleteEvent(char* fileName);
 
 //Calendar Logic functions
-int zeller();
-int isLeapYear(int year);
+int zeller();                           //finds day of week October 15, 1582 is 
+int isLeapYear(int year); 
 int numberOfLeapYears(int target_year);
 int numberOfDaysApart(int target_year, int target_month);
 int totalDaysIntoYear(int month, int day);
 int firstDayOfMonth(int target_month, int target_year);
 
-void date_read(char relevantEvents[max_event][char_lim], char* fileName, int target_month, int target_day, int target_year){
-    int month, day, year;
-    FILE* file;
-    file = fopen(fileName, "r");
-    int i = 0;
-
-    char event[char_lim];
-
-    while (fgets(event, char_lim, file) != NULL && i < max_event){
-       if ((sscanf(event, "%d %d %d", &month, &day, &year)) != 1){
-            clearInputBuffer();
-            printf("Could not read event date");
-            return;
-        }
-
-        if (month == target_month && year == target_year){
-            strcpy(relevantEvents[i], event);
-            i++;
-        }
-    }
-    fclose(file);
-}
-
 //Done
-int main() {
+int main(){
     char username[max_name];
     char txt[] = {".txt"};
     char* fileName;
@@ -115,37 +94,44 @@ int main() {
     else{
         addEvent(fileName);
     }
-    calendarChoice();
+    calendarChoice(fileName);
 
     free(fileName);
     return 0;
 }
 
-//Done
 void clearInputBuffer(){
     char c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-//Done
-int returnUser(const char* fileName){
+/*  Calendar Visual */
+
+void date_read(char relevantEvents[max_event][char_lim], char* fileName, int target_month, int target_year){
+    int month, day, year;
     FILE* file;
     file = fopen(fileName, "r");
-    if (file != NULL){
-        printf("Welcome back: %.*s! You have saved event \n",strlen(fileName) - 4, fileName); //prints only the user name (4  = .txt)
-        fclose(file);
-        return TRUE;
+    int i = 0;
+
+    char event[char_lim];
+
+    while (fgets(event, char_lim, file) != NULL && i < max_event){
+        sscanf(event, "%d/%d/%d", &month, &day, &year);
+
+        if (month == target_month && year == target_year){
+            strcpy(relevantEvents[i], event);
+            i++;
+        }
     }
-    else{ 
-        printf("Welcome new user: %.*s! You have no saved event \n", strlen(fileName) - 4, fileName);
-        return FALSE;
-    }
+    fclose(file);
+
+    printEvents(relevantEvents, i);
 }
 
-//Done
-void calendarChoice(){
+void calendarChoice(char* fileName){
     int year, month;
     char user_input[4]; // 4 = 'all' + '\0'
+    char relevantEvents[max_event][char_lim];
 
     printf("Enter year: ");
     if ((scanf("%d", &year)) != 1){
@@ -155,8 +141,8 @@ void calendarChoice(){
     }
     clearInputBuffer();
 
-    if (year == 1582){
-        printf("Calendar does not support year calendars on %d and month calendars on or before October (10) ", 1582);
+    if (year == start_year){
+        printf("Calendar does not support year calendars on %d and month calendars on or before October (10)", start_year);
         printf("Either 11 or 12, Enter a month: ");
         if ((scanf("%d", &month)) != 1){
             clearInputBuffer();
@@ -164,14 +150,18 @@ void calendarChoice(){
         }
         clearInputBuffer();
 
-        if (month < 0 || month > 12) {
+        if (month == 11 || month == 12) {
+            printCalendar(year, month);
+            return;
+    
+        }
+        else{
             printf("Invalid input. Either 11 or 12\n");
             return;
         }
-        printCalendar(year, month);
     }
     else if (year < 1582){
-        printf("Year calendar does not support years before %d", 1582);
+        printf("Calendar does not support years before %d", start_year);
         return;
     }
     else{
@@ -192,16 +182,78 @@ void calendarChoice(){
                 return;
             }
             printCalendar(year, month);
+            date_read(relevantEvents, fileName, month, year);
         }
     }
 }
 
+void printCalendar(int year, int month) {
+  printf("Calendar for %s %d:\n", monthNames[month - 1], year);
+
+  // Print the top grid line
+  for (int i = 0; i < week; i++) {
+    printf("+---");
+  }
+  printf("+\n");
+
+  // Print day names
+  for (int i = 0; i < week; i++) {
+    printf("|%s", dayNames[i]);
+  }
+  printf("|\n");
+
+  // Print the middle grid line
+  for (int i = 0; i < week; i++) {
+    printf("+---");
+  }
+  printf("+\n");
+
+  // Calculate the first day of the month
+  int firstDay = firstDayOfMonth(month, year);
+
+  // Print leading spaces
+  for (int i = 0; i < firstDay; i++) {
+    printf("|   ");
+  }
+
+  // Print the days of the month
+  int daysInMonth = monthDays[month - 1];
+    for (int day = 0; day < daysInMonth; day++) {
+        printf("|%3d", day + 1);
+        if ((firstDay + 1 + day) % week == 0) {
+        printf("|\n");
+
+        // Print the grid line after each week
+        for (int i = 0; i < week; i++) {
+            printf("+---");
+        }
+        printf("+\n");
+        }
+    }
+
+    // If the last day of the month is not the end of the week, print the
+    // remaining spaces
+    if ((firstDay + daysInMonth) % week != 0) {
+        for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
+            printf("|   ");
+        }
+        printf("|\n");
+
+        // Print the bottom grid line
+        for (int i = (firstDay + daysInMonth) % week; i < week; i++) {
+      
+        }
+        printf("+---+---+---+---+---+---+---+\n");
+    }
+
+}
+
 void printAllCalendars(int year) {
   if (year == 1582) {
-        // Print only months 10 through 12
-        printf("Invalid input please input a month past October 1582\n");
-        for (int month = 11; month <= months_in_year; month++) {
-        printf("\n");
+    // Print only months 10 through 12
+    printf("Invalid input please input a month past October 1582\n");
+    for (int month = 11; month <= months_in_year; month++) {
+      printf("\n");
     }
   } else {
     // Print all months for other years
@@ -212,9 +264,88 @@ void printAllCalendars(int year) {
   }
 }
 
-//Done
+void printEvents(char relevantEvents[max_event][char_lim], int numEvents) {
+    
+    printf("\nEvents for the selected month:\n");
+    for (int i = 0; i < numEvents; ++i) {
+    printf("%s\n", relevantEvents[i]);
+    }
+}
+
+/* Event Making */
+
+int returnUser(char* fileName){
+    FILE* file;
+    file = fopen(fileName, "r");
+    if (file != NULL){
+        printf("Welcome back: %.*s! You have saved event \n", (int)strlen(fileName) - 4, fileName); //prints only the user name (4  = .txt)
+        fclose(file);
+        return TRUE;
+    }
+    else{ 
+        printf("Welcome new user: %.*s! You have no saved event \n", (int)strlen(fileName) - 4, fileName);
+        return FALSE;
+    }
+}
+
+int modifyEvent(char* fileName){
+    FILE* ptr;
+    char eventdate[date_and_time], event[char_lim], lineEdit[char_lim], input, quit[5]; //quit is 4 letters plus '/0'
+    ptr = fopen(fileName, "r+");
+    if (ptr == NULL){
+        perror("Error opening the file\n");
+        return 1;
+    }
+        
+    do {
+        printf("Input the date (MM/DD/YYYY), the time, following a 24-hour clock (00:00), of the event being changed (separated by a space):\n");
+        fgets(eventdate, sizeof(eventdate), stdin);
+        clearInputBuffer();
+    
+        while (fgets(event, sizeof(event), ptr) != NULL){  //Keeps scanning until EOF reached
+            if (strncmp(event, eventdate, strlen(eventdate)) == 0){
+                printf("Enter the new events date, time, and description/title: ");
+                fgets(lineEdit, sizeof(char) * char_lim, stdin);
+                clearInputBuffer();
+
+                fseek(ptr, -strlen(event), SEEK_CUR);
+
+                fprintf(ptr, "%s", lineEdit);
+                fflush(ptr);
+
+                printf("edited successfully.\n");
+
+                fseek(ptr, 0, SEEK_SET);
+                break;
+            }
+        }
+        printf("To quit enter 'quit' ");
+        scanf("%4s", quit);
+        clearInputBuffer();
+
+        if (strcasecmp(quit, "quit") == 0){
+            break;
+        }
+    }
+    while(TRUE);
+  
+    fclose(ptr);
+
+    printf("Would you like to add or delete any events (A or D) or quit (anything else)");
+    scanf(" %c", &input);
+    clearInputBuffer();
+
+    if (toupper(input) == 'A'){
+        addEvent(fileName);
+    }
+    else if (toupper(input) == 'D'){
+        deleteEvent(fileName);
+    }
+    return 0;
+}
+
 int addEvent(char* fileName){
-    char input, event[char_lim];
+    char input, event[char_lim], quit[5];
 
     FILE* ptr;
     ptr = fopen(fileName, "a");
@@ -224,90 +355,106 @@ int addEvent(char* fileName){
         return -1;
     }
     do{
-        printf("Do you want to add an event (enter Y for yes and N for No): ");
-        input = getchar();
-
+        printf("Input the date (MM/DD/YYYY), the time, following a 24-hour clock (00:00), of the event and the event (all separated by space): \n");
+        printf("Example: 12/34/5678 23:59 'Lorem Ipsum' \n");
+        fgets(event, sizeof(event), stdin);
         clearInputBuffer();
 
-        if (toupper(input) == 'Y'){
-            printf("Input the date (MM/DD/YYYY), the time, following a 24-hour clock (00:00), of the event and the event (all separated by space): \n");
-            printf("Example: 12/34/5678 23:59 'Lorem Ipsum' \n");
-
-            fgets(event, sizeof(event), stdin);
-            clearInputBuffer();
-
-            if (fprintf(ptr, "%s\n", event) < 0) { //if no lines printed onto file, quit
-                perror("Error writing to the file\n");
-                fclose(ptr);
-                return 1;
-            }
-
-            if (fflush(ptr) != 0) { //ensures event is printed onto file, quits if fails
-                perror("Error flushing the file\n");
-                fclose(ptr);
-                return 1;
-            }
+        if ((fprintf(ptr, "%s", event)) > 0){   //
+            fflush(ptr);
+            printf("Sucessfully added\n");
         }
-        else if (toupper(input) == 'N'){
-            printf("Ok\n");
-        }
-        else{
-            printf("Invalid input. Y or N\n");
-        }
+
+        printf("To quit enter 'quit' ");
+        scanf("%4s", quit);
+        clearInputBuffer();
+
+        if (strcasecmp(quit, "quit") == 0)
+            break;
     }
-    while (toupper(input) != 'N');
+    while (TRUE);
+
     fclose(ptr);
+
+    printf("Would you like to edit or delete any events (E or D) or quit (anything else)\n");
+    scanf(" %c", &input);
+    clearInputBuffer();
+
+    if (toupper(input) == 'E' ){
+        modifyEvent(fileName);
+    }
+    else if (toupper(input) == 'D' ){
+        deleteEvent(fileName);
+    }
+
     return 0;
 }
 
-//Done
-int modifyEvent(const char* fileName){
+int deleteEvent(char* fileName){
+    char lineDelete[date_and_time], line[char_lim], filler[char_lim], decision, quit[5];
+    int found = 0;
     FILE* ptr;
-    char lineEdit[date_and_time], event[char_lim];
-    ptr = fopen(fileName, "r+");
-    if (ptr == NULL){
+    FILE* tmp;
+
+    ptr = fopen(fileName, "r");
+    tmp = fopen("tmp.txt", "w");
+
+    if (ptr == NULL || tmp == NULL){
         perror("Error opening the file\n");
         return 1;
     }
 
-    printf("Input the date (MM/DD/YYYY), the time, following a 24-hour clock (00:00), of the event being changed (separated by a space):\n");
-    printf("And press enter twice: once to save and one extra time to submit\n");
-
-    fgets(lineEdit, sizeof(lineEdit), stdin);
-    clearInputBuffer();
-    
-    while (fgets(event, sizeof(event), ptr) != NULL){  //Keeps scanning until EOF reached
-            if (strncmp(event, lineEdit, strlen(lineEdit)) == 0){
-                printf("Enter the new event: ");
-                fgets(lineEdit, sizeof(char) * char_lim, stdin);
-                clearInputBuffer();
-
-                fseek(ptr, -strlen(event), SEEK_CUR);
-
-                if (fprintf(ptr, "%s\n", lineEdit) < 0) {
-                perror("Error writing to the file\n");
-                fclose(ptr);
-                return 1;
-                }
-
-            if (fflush(ptr) != 0) {
-                perror("Error flushing the file\n");
-                fclose(ptr);
-                return 1;
-                }
-        
-                printf("edited successfully.\n");
-                break;
+    do {
+        printf("Input the date (MM/DD/YYYY), the time, following a 24-hour clock (00:00), of the event being deleted (separated by a space): ");
+        fgets(lineDelete, sizeof(lineDelete), stdin);
+        clearInputBuffer();
+        while (fgets(line, sizeof(line), ptr) != NULL) {
+            if (strncmp(line, lineDelete, strlen(lineDelete)) == 0){
+                found = 1;
+                printf("Event found and deleted successfully.\n");
+            }
+            else {
+                fprintf(tmp, "%s", line);
             }
         }
+
+        if (!found){
+            printf("Event not found\n");
+        }
+        fseek(ptr, 0, SEEK_SET);
+
+        printf("Enter 'quit' to quit: ");
+        scanf("%4s", quit);
+        clearInputBuffer();
+
+        if (strcasecmp(quit, "quit") == 0){
+            break;
+        }
+    }
+    while (TRUE);
+
     fclose(ptr);
+    fclose(tmp);
+
+    remove(fileName);
+    rename("tmp.txt", fileName);
+
+    printf("Would you like to edit or add any events (E or A) or quit (anything else)\n");
+    scanf(" %c", &decision);
+    clearInputBuffer();
+
+    if (toupper(decision) == 'E' ){
+        modifyEvent(fileName);
+    }
+    else if (toupper(decision) == 'A' ){
+        deleteEvent(fileName);
+    }
+
     return 0;
 }
 
-
 /* Calendar Logic Portion */
 
-//Done
 int firstDayOfMonth(int target_month, int target_year){
     int daysApart = numberOfDaysApart(target_year, target_month);
     
@@ -318,7 +465,6 @@ int firstDayOfMonth(int target_month, int target_year){
     return (daysApart + firstDay) % week; 
 }
 
-//Done
 int zeller(){
     // K = last two year digits, J = first two year digits
     int K = start_year % 100, J = (start_year / 100);
@@ -330,13 +476,11 @@ int zeller(){
     return (zellerDay + 6 + week) % 7; // + week ensures return is positive
 }
 
-//Done
 int isLeapYear(int year){
     //return true or false, depending on if leap year or not
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
-//Done
 int numberOfLeapYears(int target_year){
     //# of days added due to leap years
     int leapDays = 0;
@@ -350,7 +494,6 @@ int numberOfLeapYears(int target_year){
     return leapDays;
 }
 
-//Done
 int numberOfDaysApart(int target_year, int target_month){
     //accounts for additional days due to leap years
     int leapDays = numberOfLeapYears(target_year);
@@ -382,7 +525,6 @@ int numberOfDaysApart(int target_year, int target_month){
     return yearAhead + leapDays + daysIntoCurrent + daysLeftStart;  //total # of days between entered month and starting date
 }
 
-//Done
 int totalDaysIntoYear(int month, int day){
     int numOfDays = 0;
 
@@ -395,65 +537,4 @@ int totalDaysIntoYear(int month, int day){
     numOfDays += day;
 
     return numOfDays;
-}
-
-------------------------------------------------------------------------------------------------------------------------------------------------
-
-void calendarChoice() {
-  int year, month;
-  char user_input[4]; // 4 = 'all' + '\0'
-
-  printf("Enter year: ");
-  if ((scanf("%d", &year)) != 1) {
-    clearInputBuffer();
-    printf("Failed to scan year");
-    return;
-  }
-  clearInputBuffer();
-
-  if (year == 1582) {
-    printf("Calendar does not support year calendars on %d and month "
-           "calendars on or before October (10) ",
-           1582);
-    printf("Either 11 or 12, Enter a month: ");
-    if ((scanf("%d", &month)) != 1) {
-      clearInputBuffer();
-      printf("Failed to scan month\n");
-    }
-    clearInputBuffer();
-
-    if (month < 0 || month > 12) {
-      printf("Invalid input. Either 11 or 12\n");
-      return;
-    }
-    printCalendar(year, month);
-  } else if (year < 1582) {
-    printf("Year calendar does not support years before %d", 1582);
-    return;
-  } else {
-    printf("Enter month ('all' or 1-12): ");
-    if ((scanf("%3s", user_input)) != 1) {
-      clearInputBuffer();
-      printf("Failed to scan user input\n");
-    }
-    clearInputBuffer();
-
-    if (strcmp(user_input, "all") == 0) {
-      printAllCalendars(year);
-    } else {
-      if ((sscanf(user_input, "%d", &month)) !=
-          1) { // for cases where a string besides 'all' is inputted
-        clearInputBuffer();
-        printf("Invalid input. Enter 1 - 12 or 'all'.\n");
-        return;
-      }
-    }
-    void printEvents(char *relevantEvents[], int numEvents) {
-      printf("\nEvents for the selected month:\n");
-      for (int i = 0; i < max_Events; ++i) {
-          printf("%s\n", relevantEvents[i]);
-        }
-      }
-    printCalendar(year, month);
-  }
 }
