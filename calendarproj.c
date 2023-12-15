@@ -1,3 +1,10 @@
+//Made by: Yaoxin Mei, Abubakar Salhe, and Omar Salhe
+/*
+The program creates a calendar using user-inputted month and year, starting from October 15,
+1582, and employing Zeller's Congruence for precise date calculations. Users can add, modify,
+and delete events, and the program saves these events for future reference, displaying them below
+the calendar.
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
